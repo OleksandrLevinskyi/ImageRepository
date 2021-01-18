@@ -1,0 +1,88 @@
+﻿@model IEnumerable<OLImageRepository.Models.Picture>
+@using ImageRepositoryClassLibrary;
+@using Microsoft.AspNetCore.Http;
+
+@{
+    bool isPrivateMode = Convert.ToBoolean(Context.Session.GetString("isPrivateMode"));
+    bool isAlbumSpecified = false;
+    string albumId = Context.Session.GetString("albumId");
+
+    if (!String.IsNullOrEmpty(albumId))
+        isAlbumSpecified = true;
+
+    if (isPrivateMode)
+    {
+        if (!isAlbumSpecified) ViewData["Title"] = "My Images (your images only)";
+        else ViewData["Title"] = $"Images in '{Context.Session.GetString("albumName")}' Album";
+    }
+
+    else ViewData["Title"] = "Browse Images (all with public access)";
+}
+
+<div style="width:100%;">
+    <h1 style="float:left;">@ViewData["Title"]</h1>
+    <form asp-action="Search" style="float:right;">
+        <input name="query" />
+        <input type="submit" value="Search" />
+    </form>
+</div>
+
+@if (isPrivateMode)
+{
+    <p>
+        <a asp-action="Create">Add Image</a>
+    </p>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StoredPicture)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateAdded)
+            </th>
+            @if (isPrivateMode)
+            {
+                <th>
+                    @Html.DisplayNameFor(model => model.IsPublic)
+                </th>
+            }
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    <img class="img-fluid" src="data:image/jpeg;base64,@Convert.ToBase64String(item.StoredPicture)" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateAdded)
+                </td>
+                @if (isPrivateMode)
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IsPublic)
+                    </td>
+                }
+                <td>
+                    @if (isPrivateMode)
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.PictureId">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.PictureId">Delete</a>
+                    }
+                    <a asp-action="Details" asp-route-id="@item.PictureId">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,93 @@
+﻿@model OLImageRepository.Models.Picture
+@using Microsoft.AspNetCore.Http;
+
+@{
+    bool isAlbumSpecified = false;
+    string albumId = Context.Session.GetString("albumId");
+
+    if (!String.IsNullOrEmpty(albumId))
+        isAlbumSpecified = true;
+
+    if (!isAlbumSpecified) ViewData["Title"] = "Create New Image";
+    else ViewData["Title"] = $"Create New Image in '{Context.Session.GetString("albumName")}' Album";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form enctype="multipart/form-data" asp-action="Create">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                @if (!isAlbumSpecified)
+                {
+                    <label asp-for="AlbumId" class="control-label"></label>
+                    <select asp-for="AlbumId" class="form-control" asp-items="ViewBag.AlbumId"></select>
+                }
+                else
+                {
+                    <input hidden asp-for="AlbumId" class="form-control" value="@albumId" />
+                }
+            </div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            @*<div class="form-group">
+                    <label asp-for="StoredPicture" class="control-label"></label>
+                    <input asp-for="StoredPicture" class="form-control" />
+                    <span asp-validation-for="StoredPicture" class="text-danger"></span>
+                </div>*@
+            <div class="form-group">
+                <label for="imagePath">Select Image</label>
+                <input type="file" name="image" id="imagePath">
+            </div>
+
+            @*<div class="form-group">
+                    <label asp-for="DateAdded" class="control-label"></label>
+                    <input asp-for="DateAdded" class="form-control" />
+                    <span asp-validation-for="DateAdded" class="text-danger"></span>
+                </div>*@
+            @*<div class="form-group">
+                    <label asp-for="DominantColor" class="control-label"></label>
+                    <input asp-for="DominantColor" class="form-control" />
+                    <span asp-validation-for="DominantColor" class="text-danger"></span>
+                </div>*@
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsPublic" /> @Html.DisplayNameFor(model => model.IsPublic)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsHorizontal" /> @Html.DisplayNameFor(model => model.IsHorizontal)
+                </label>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    @if (isAlbumSpecified)
+    {
+        <a asp-action="BrowseAlbumImages">Back to List</a>
+    }
+    else
+    {
+        <a asp-action="BrowsePrivateImages">Back to List</a>
+    }
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

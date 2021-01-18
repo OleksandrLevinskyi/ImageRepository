@@ -1,0 +1,44 @@
+﻿@model IEnumerable<OLImageRepository.Models.Album>
+
+@{
+    ViewData["Title"] = "My Albums";
+}
+
+<div style="float:left">
+    <h1>@ViewData["Title"]</h1>
+</div>
+
+<a asp-action="Create">Create New Album</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            @*<th>
+                    @Html.DisplayNameFor(model => model.OwnerId)
+                </th>*@
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                @*<td>
+                        @Html.DisplayFor(modelItem => item.OwnerId)
+                    </td>*@
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    <a asp-action="BrowseAlbumImages" asp-controller="Picture" asp-route-albumId="@item.AlbumId">Show Images</a> |
+                    <a asp-action="Edit" asp-route-id="@item.AlbumId">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@item.AlbumId">Delete</a>
+                    @*<a asp-action="Details" asp-route-id="@item.AlbumId">Details</a>*@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

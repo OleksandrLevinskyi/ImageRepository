@@ -1,0 +1,79 @@
+﻿@model OLImageRepository.Models.Picture
+@using Microsoft.AspNetCore.Http;
+
+@{
+    bool isAlbumSpecified = false;
+    string albumId = Context.Session.GetString("albumId");
+
+    if (!String.IsNullOrEmpty(albumId))
+        isAlbumSpecified = true;
+
+    ViewData["Title"] = "Edit Image";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="PictureId" />
+            <input type="hidden" asp-for="OwnerId" />
+            <input type="hidden" asp-for="DateAdded" />
+            <input type="hidden" asp-for="DominantColor" />
+            <input type="hidden" asp-for="IsHorizontal" />
+
+            @if (isAlbumSpecified)
+            {
+                <input type="hidden" asp-for="AlbumId" />
+            }
+            else
+            {
+                <div class="form-group">
+                    <label asp-for="AlbumId" class="control-label"></label>
+                    <select asp-for="AlbumId" class="form-control" asp-items="ViewBag.AlbumId"></select>
+                    <span asp-validation-for="AlbumId" class="text-danger"></span>
+                </div>
+            }
+
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="hidden" asp-for="StoredPicture" />
+                <img class="img-fluid" src="data:image/jpeg;base64,@Convert.ToBase64String(Model.StoredPicture)" />
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsPublic" /> @Html.DisplayNameFor(model => model.IsPublic)
+                </label>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    @if (isAlbumSpecified)
+    {
+        <a asp-action="BrowseAlbumImages">Back to List</a>
+    }
+    else
+    {
+        <a asp-action="BrowsePrivateImages">Back to List</a>
+    }
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

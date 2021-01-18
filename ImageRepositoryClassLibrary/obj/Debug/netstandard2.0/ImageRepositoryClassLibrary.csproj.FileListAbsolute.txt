@@ -1,0 +1,9 @@
+C:\Users\Oleksandr\Desktop\ImageRepository\ImageRepositoryClassLibrary\bin\Debug\netstandard2.0\ImageRepositoryClassLibrary.deps.json
+C:\Users\Oleksandr\Desktop\ImageRepository\ImageRepositoryClassLibrary\bin\Debug\netstandard2.0\ImageRepositoryClassLibrary.dll
+C:\Users\Oleksandr\Desktop\ImageRepository\ImageRepositoryClassLibrary\bin\Debug\netstandard2.0\ImageRepositoryClassLibrary.pdb
+C:\Users\Oleksandr\Desktop\ImageRepository\ImageRepositoryClassLibrary\obj\Debug\netstandard2.0\ImageRepositoryClassLibrary.csprojAssemblyReference.cache
+C:\Users\Oleksandr\Desktop\ImageRepository\ImageRepositoryClassLibrary\obj\Debug\netstandard2.0\ImageRepositoryClassLibrary.AssemblyInfoInputs.cache
+C:\Users\Oleksandr\Desktop\ImageRepository\ImageRepositoryClassLibrary\obj\Debug\netstandard2.0\ImageRepositoryClassLibrary.AssemblyInfo.cs
+C:\Users\Oleksandr\Desktop\ImageRepository\ImageRepositoryClassLibrary\obj\Debug\netstandard2.0\ImageRepositoryClassLibrary.csproj.CoreCompileInputs.cache
+C:\Users\Oleksandr\Desktop\ImageRepository\ImageRepositoryClassLibrary\obj\Debug\netstandard2.0\ImageRepositoryClassLibrary.dll
+C:\Users\Oleksandr\Desktop\ImageRepository\ImageRepositoryClassLibrary\obj\Debug\netstandard2.0\ImageRepositoryClassLibrary.pdb

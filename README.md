@@ -23,6 +23,11 @@ CREATE/READ/UPDATE/DELETE Albums for the registered users
 
 RECOGNIZE THE DOMINANT COLOR for each image (possibly can be used to implement color-based search)
 
+
+
+
+
+
 All CRUD functionality is implemented for BOTH Images/Albums.
 Implemented all error handling for actions modifying the DB.
 

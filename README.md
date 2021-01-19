@@ -19,7 +19,7 @@ DELETE image(s)
 
 Additional Functionality:
 CREATE/READ/UPDATE/DELETE Albums for the registered users
-* help users navigate though their images stored on the repository
+* help users navigate through their images stored on the repository
 
 RECOGNIZE THE DOMINANT COLOR for each image (possibly can be used to implement color-based search)
 

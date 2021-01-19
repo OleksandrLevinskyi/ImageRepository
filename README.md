@@ -3,6 +3,7 @@
 This is an ASP.NET Core 3.1 MVC image repository application.
 
 Implemented:
+
 SEARCH function
 * from descriptions/names of the images
 

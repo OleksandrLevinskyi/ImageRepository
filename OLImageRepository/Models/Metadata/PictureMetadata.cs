@@ -38,6 +38,7 @@ namespace OLImageRepository.Models
         [Required]
         public string Description { get; set; }
 
+        [Display(Name = "Stored Picture")]
         public byte[] StoredPicture { get; set; }
 
         [Display(Name = "Last Modified")]

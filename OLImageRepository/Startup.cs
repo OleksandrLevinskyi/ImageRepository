@@ -42,7 +42,7 @@ namespace OLImageRepository
             //    .AddEntityFrameworkStores<ApplicationDbContext>();
 
             // modified Dependency Injection service to add Role support
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<IdentityUser>()
                 .AddRoles<IdentityRole>() // added for Role Managment support
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 

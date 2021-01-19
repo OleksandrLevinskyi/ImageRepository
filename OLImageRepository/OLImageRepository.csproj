@@ -21,6 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ImageRepositoryClassLibrary\ImageRepositoryClassLibrary.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="ImageRepositoryClassLibrary">
       <HintPath>..\ImageRepositoryClassLibrary\bin\Debug\netstandard2.0\ImageRepositoryClassLibrary.dll</HintPath>
     </Reference>

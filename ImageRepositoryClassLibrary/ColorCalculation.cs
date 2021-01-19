@@ -24,7 +24,8 @@ namespace ImageRepositoryClassLibrary
                     Color color = bmp.GetPixel(x, y);
                     string key = $"{color.R} {color.G} {color.B}";
 
-                    if(key != "0 0 0" && key != "255 255 255"){
+                    if (key != "0 0 0" && key != "255 255 255")
+                    {
                         if (colors.Keys.Contains(key)) colors[key]++;
                         else colors.Add(key, 1);
                     }

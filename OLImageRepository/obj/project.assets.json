@@ -3062,6 +3062,19 @@
         "runtime": {
           "lib/netstandard1.3/System.Xml.XmlSerializer.dll": {}
         }
+      },
+      "ImageRepositoryClassLibrary/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
+        "dependencies": {
+          "System.Drawing.Common": "5.0.0"
+        },
+        "compile": {
+          "bin/placeholder/ImageRepositoryClassLibrary.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/ImageRepositoryClassLibrary.dll": {}
+        }
       }
     }
   },
@@ -9587,10 +9600,16 @@
         "system.xml.xmlserializer.4.3.0.nupkg.sha512",
         "system.xml.xmlserializer.nuspec"
       ]
+    },
+    "ImageRepositoryClassLibrary/1.0.0": {
+      "type": "project",
+      "path": "../ImageRepositoryClassLibrary/ImageRepositoryClassLibrary.csproj",
+      "msbuildProject": "../ImageRepositoryClassLibrary/ImageRepositoryClassLibrary.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v3.1": [
+      "ImageRepositoryClassLibrary >= 1.0.0",
       "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore >= 3.1.11",
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 3.1.11",
       "Microsoft.AspNetCore.Identity.UI >= 3.1.11",
@@ -9628,7 +9647,11 @@
       "frameworks": {
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\Oleksandr\\Desktop\\OLImageRepository\\ImageRepositoryClassLibrary\\ImageRepositoryClassLibrary.csproj": {
+              "projectPath": "C:\\Users\\Oleksandr\\Desktop\\OLImageRepository\\ImageRepositoryClassLibrary\\ImageRepositoryClassLibrary.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

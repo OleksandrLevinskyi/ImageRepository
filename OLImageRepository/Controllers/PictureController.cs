@@ -29,7 +29,7 @@ namespace ImageRepository.Controllers
 
         // GET: Picture
         [AllowAnonymous]
-        public async Task<IActionResult> BrowsePublicImages(int? albumId = null)
+        public async Task<IActionResult> BrowsePublicImages()
         {
             var pictureContext = _context.Picture;
             IEnumerable<Picture> pictures;
@@ -42,7 +42,7 @@ namespace ImageRepository.Controllers
         }
 
         // GET: Picture
-        public async Task<IActionResult> BrowsePrivateImages(int? albumId = null)
+        public async Task<IActionResult> BrowsePrivateImages()
         {
             var pictureContext = _context.Picture;
             IEnumerable<Picture> pictures;
@@ -86,6 +86,7 @@ namespace ImageRepository.Controllers
             return View("Index", pictures.OrderByDescending(i => i.DateAdded));
         }
 
+        [AllowAnonymous]
         // GET: Picture/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -94,8 +95,8 @@ namespace ImageRepository.Controllers
                 return NotFound();
             }
 
-            var picture = await _context.Picture
-                .FirstOrDefaultAsync(m => m.PictureId == id);
+            var picture = await _context.Picture.Include(i => i.Album).FirstOrDefaultAsync(i => i.PictureId == id);
+
             if (picture == null)
             {
                 return NotFound();
@@ -164,6 +165,7 @@ namespace ImageRepository.Controllers
             }
 
             var picture = await _context.Picture.FindAsync(id);
+
             if (picture == null)
             {
                 return NotFound();
@@ -219,8 +221,8 @@ namespace ImageRepository.Controllers
                 return NotFound();
             }
 
-            var picture = await _context.Picture
-                .FirstOrDefaultAsync(m => m.PictureId == id);
+            var picture = await _context.Picture.Include(i => i.Album).FirstOrDefaultAsync(m => m.PictureId == id);
+
             if (picture == null)
             {
                 return NotFound();
@@ -237,7 +239,7 @@ namespace ImageRepository.Controllers
             var picture = await _context.Picture.FindAsync(id);
             _context.Picture.Remove(picture);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return await RedirectToIndex();
         }
 
         private bool PictureExists(int id)
@@ -265,19 +267,32 @@ namespace ImageRepository.Controllers
         // POST: Picture/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Search(int? pictureId)
+        public async Task<IActionResult> Search(string query)
         {
-            var picture = await _context.Picture.FindAsync(pictureId);
-            var album = await _context.Album.FirstOrDefaultAsync(a => a.Name == "Favorite" && a.OwnerId == _userManager.GetUserId(User));
+            var pictures = _context.Picture.Where(i => i.Name.Contains(query) || i.Description.Contains(query));
 
-            if (album != null)
+            bool isPrivateMode = Convert.ToBoolean(HttpContext.Session.GetString("isPrivateMode"));
+            bool isAlbumSpecified = false;
+            string albumId = HttpContext.Session.GetString("albumId");
+
+            if (!String.IsNullOrEmpty(albumId))
+                isAlbumSpecified = true;
+
+            if (isPrivateMode)
             {
-                picture.AlbumId = album.AlbumId;
-
-                _context.Update(picture);
-                await _context.SaveChangesAsync();
+                pictures = pictures.Where(i => i.OwnerId == _userManager.GetUserId(User));
+                if (isAlbumSpecified)
+                {
+                    pictures = pictures.Where(i => i.AlbumId == Convert.ToInt32(albumId));
+                }
             }
-            return RedirectToAction("Index");
+            else
+            {
+                pictures = pictures.Where(i => i.IsPublic);
+            }
+
+            var results = await pictures.ToListAsync();
+            return View("Index", results.OrderByDescending(i => i.DateAdded));
         }
     }
 }

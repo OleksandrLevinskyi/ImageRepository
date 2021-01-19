@@ -15,8 +15,10 @@
         if (!isAlbumSpecified) ViewData["Title"] = "My Images (your images only)";
         else ViewData["Title"] = $"Images in '{Context.Session.GetString("albumName")}' Album";
     }
-
-    else ViewData["Title"] = "Browse Images (all with public access)";
+    else
+    {
+        ViewData["Title"] = "Browse Images (all with public access)";
+    }
 }
 
 <div style="width:100%;">

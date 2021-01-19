@@ -40,7 +40,7 @@ namespace OLImageRepository.Models
 
         public byte[] StoredPicture { get; set; }
 
-        [Display(Name = "Posted")]
+        [Display(Name = "Last Modified")]
         public DateTime DateAdded { get; set; }
 
         [Display(Name = "Dominant Color")]

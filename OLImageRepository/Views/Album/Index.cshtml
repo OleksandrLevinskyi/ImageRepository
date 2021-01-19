@@ -33,9 +33,12 @@
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
-                    <a asp-action="BrowseAlbumImages" asp-controller="Picture" asp-route-albumId="@item.AlbumId">Show Images</a> |
-                    <a asp-action="Edit" asp-route-id="@item.AlbumId">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@item.AlbumId">Delete</a>
+                    <a asp-action="BrowseAlbumImages" asp-controller="Picture" asp-route-albumId="@item.AlbumId">Show Images</a>
+                    @if (item.Name != "General")
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.AlbumId">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.AlbumId">Delete</a>
+                    }
                     @*<a asp-action="Details" asp-route-id="@item.AlbumId">Details</a>*@
                 </td>
             </tr>

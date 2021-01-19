@@ -126,32 +126,41 @@ namespace ImageRepository.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("PictureId,AlbumId,Name,Description,StoredPicture,DateAdded,DominantColor,IsPublic,IsHorizontal")] Picture picture, IFormFile image)
         {
-            if (ModelState.IsValid)
+            try
             {
-                if (image != null && image.Length > 0)
+                if (ModelState.IsValid)
                 {
-                    // Source code for fetching image: https://stackoverflow.com/questions/42741170/how-to-save-images-to-database-using-asp-net-core
-                    byte[] pictureByteArr = null;
-                    using (var fs = image.OpenReadStream())
+                    if (image != null && image.Length > 0)
                     {
-                        using (var ms = new MemoryStream())
+                        // Source code for fetching image: https://stackoverflow.com/questions/42741170/how-to-save-images-to-database-using-asp-net-core
+                        byte[] pictureByteArr = null;
+                        using (var fs = image.OpenReadStream())
                         {
-                            fs.CopyTo(ms);
-                            pictureByteArr = ms.ToArray();
+                            using (var ms = new MemoryStream())
+                            {
+                                fs.CopyTo(ms);
+                                pictureByteArr = ms.ToArray();
+                            }
+
+                            picture.StoredPicture = pictureByteArr;
+                            picture.DominantColor = ColorCalculation.GetDominantColor((Bitmap)Bitmap.FromStream(fs));
                         }
-
-                        picture.StoredPicture = pictureByteArr;
-                        picture.DominantColor = ColorCalculation.GetDominantColor((Bitmap)Bitmap.FromStream(fs));
                     }
+
+                    picture.OwnerId = _userManager.GetUserId(User);
+
+                    _context.Add(picture);
+                    await _context.SaveChangesAsync();
+
+                    TempData["message"] = $"Image added successfully";
+                    return await RedirectToIndex();
                 }
-
-                picture.OwnerId = _userManager.GetUserId(User);
-
-                _context.Add(picture);
-                await _context.SaveChangesAsync();
-
-                return await RedirectToIndex();
             }
+            catch (Exception ex)
+            {
+                TempData["message"] = $"Error creating a record: {ex.GetBaseException().Message}";
+            }
+
             ViewData["AlbumId"] = new SelectList(_context.Album.Where(a => a.OwnerId == _userManager.GetUserId(User)).ToList(), "AlbumId", "Name", picture.AlbumId);
             return View(picture);
         }
@@ -183,7 +192,7 @@ namespace ImageRepository.Controllers
         {
             if (id != picture.PictureId)
             {
-                return NotFound();
+                TempData["message"] = $"The record being updated is not the one requested";
             }
 
             if (ModelState.IsValid)
@@ -194,21 +203,27 @@ namespace ImageRepository.Controllers
 
                     _context.Update(picture);
                     await _context.SaveChangesAsync();
+
+                    TempData["message"] = $"Image updated successfully";
+                    return await RedirectToIndex();
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
                     if (!PictureExists(picture.PictureId))
                     {
-                        return NotFound();
+                        TempData["message"] = $"Picture ID is not on file: {picture.PictureId}";
                     }
                     else
                     {
-                        throw;
+                        TempData["message"] = $"Concurrency exception: {ex.GetBaseException().Message}";
                     }
                 }
-
-                return await RedirectToIndex();
+                catch (Exception ex)
+                {
+                    TempData["message"] = $"Error updating a record: {ex.GetBaseException().Message}";
+                }
             }
+
             ViewData["AlbumId"] = new SelectList(_context.Album.Where(a => a.OwnerId == _userManager.GetUserId(User)).ToList(), "AlbumId", "Name", picture.AlbumId);
             return View(picture);
         }
@@ -236,10 +251,21 @@ namespace ImageRepository.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var picture = await _context.Picture.FindAsync(id);
-            _context.Picture.Remove(picture);
-            await _context.SaveChangesAsync();
-            return await RedirectToIndex();
+            try
+            {
+                var picture = await _context.Picture.FindAsync(id);
+                _context.Picture.Remove(picture);
+                await _context.SaveChangesAsync();
+
+                TempData["message"] = $"Image deleted successfully";
+                return await RedirectToIndex();
+            }
+            catch (Exception ex)
+            {
+                TempData["message"] = $"Error deleting a record: {ex.GetBaseException().Message}";
+            }
+
+            return RedirectToAction("Delete", new { ID = id });
         }
 
         private bool PictureExists(int id)

@@ -51,14 +51,24 @@ namespace ImageRepository.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("AlbumId,OwnerId,Name")] Album album)
         {
-            if (ModelState.IsValid)
+            try
             {
-                album.OwnerId = _userManager.GetUserId(User);
+                if (ModelState.IsValid)
+                {
+                    album.OwnerId = _userManager.GetUserId(User);
 
-                _context.Add(album);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                    _context.Add(album);
+                    await _context.SaveChangesAsync();
+
+                    TempData["message"] = $"Album '{album.Name}' added successfully";
+                    return RedirectToAction(nameof(Index));
+                }
             }
+            catch (Exception ex)
+            {
+                TempData["message"] = $"Error creating a record: {ex.GetBaseException().Message}";
+            }
+
             return View(album);
         }
 
@@ -71,6 +81,7 @@ namespace ImageRepository.Controllers
             }
 
             var album = await _context.Album.FindAsync(id);
+
             if (album == null)
             {
                 return NotFound();
@@ -87,7 +98,7 @@ namespace ImageRepository.Controllers
         {
             if (id != album.AlbumId)
             {
-                return NotFound();
+                TempData["message"] = $"The record being updated is not the one requested";
             }
 
             if (ModelState.IsValid)
@@ -96,20 +107,27 @@ namespace ImageRepository.Controllers
                 {
                     _context.Update(album);
                     await _context.SaveChangesAsync();
+
+                    TempData["message"] = $"Album '{album.Name}' updated successfully";
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
                     if (!AlbumExists(album.AlbumId))
                     {
-                        return NotFound();
+                        TempData["message"] = $"Album ID is not on file: {album.AlbumId}";
                     }
                     else
                     {
-                        throw;
+                        TempData["message"] = $"Concurrency exception: {ex.GetBaseException().Message}";
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (Exception ex)
+                {
+                    TempData["message"] = $"Error updating a record: {ex.GetBaseException().Message}";
+                }
             }
+
             return View(album);
         }
 
@@ -136,10 +154,21 @@ namespace ImageRepository.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var album = await _context.Album.FindAsync(id);
-            _context.Album.Remove(album);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                var album = await _context.Album.FindAsync(id);
+                _context.Album.Remove(album);
+                await _context.SaveChangesAsync();
+
+                TempData["message"] = $"Album '{album.Name}' deleted successfully";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["message"] = $"Error deleting a record: {ex.GetBaseException().Message}";
+            }
+
+            return RedirectToAction("Delete", new { ID = id });
         }
 
         private bool AlbumExists(int id)
